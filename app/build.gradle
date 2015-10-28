@@ -12,14 +12,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
-retrolambda {
-    jdk "/Library/Java/JavaVirtualMachines/jdk1.8.0_66.jdk/Contents/Home"
-    oldJdk "/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home" // we need 1.5 => jdk <= 1.7 so we can run Unit Tests
-    javaVersion JavaVersion.VERSION_1_7
-    defaultMethods false
-    incremental true
-}
-
 android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
