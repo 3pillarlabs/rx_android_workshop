@@ -28,4 +28,6 @@ dependencies {
     // Because RxAndroid releases are few and far between, it is recommended you also
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     compile 'io.reactivex:rxjava:1.0.14'
+
+    compile 'org.slf4j:slf4j-android:1.6.1-RC1'
 }
