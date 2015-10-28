@@ -1,6 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
 
 android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
@@ -29,6 +36,6 @@ dependencies {
 
     compile 'org.slf4j:slf4j-android:1.6.1-RC1'
 
-    //Testing
+    // Testing
     testCompile 'junit:junit:4.12'
 }
