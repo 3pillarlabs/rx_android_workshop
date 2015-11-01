@@ -9,15 +9,8 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 apply plugin: 'me.tatarka.retrolambda'
-
-retrolambda {
-    jdk "/Library/Java/JavaVirtualMachines/jdk1.8.0_66.jdk/Contents/Home"
-    oldJdk "/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home" // we need 1.5 => jdk <= 1.7 so we can run Unit Tests
-    javaVersion JavaVersion.VERSION_1_7
-    defaultMethods false
-    incremental true
-}
 
 android {
     compileOptions {
@@ -56,6 +49,11 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
     compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2'
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
+
+    // Injection
+    provided 'javax.annotation:jsr250-api:1.0'
+    apt 'com.google.dagger:dagger-compiler:2.0.1'
+    compile 'com.google.dagger:dagger:2.0.1'
 
     compile 'org.slf4j:slf4j-android:1.6.1-RC1'
 }
