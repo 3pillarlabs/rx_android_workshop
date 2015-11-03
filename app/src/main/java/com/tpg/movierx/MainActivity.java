@@ -25,15 +25,7 @@ public class MainActivity extends AppCompatActivity {
         MovieApplication.component(this).inject(this);
         setContentView(R.layout.activity_main);
 
-        logEvenNumbers(new Integer[]{1, 3, 4, 5, 6});
         logMoviePlotByTitle("Kill Bill");
-    }
-
-    private void logEvenNumbers(final Integer[] numbers) {
-
-        DummyObservables
-                .keepEvenNumbers(numbers)
-                .subscribe(i -> logger.debug("{}", i));
     }
 
     private void logMoviePlotByTitle(final String movieTitle) {
