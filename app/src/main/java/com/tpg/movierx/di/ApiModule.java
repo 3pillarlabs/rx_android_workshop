@@ -3,6 +3,8 @@ package com.tpg.movierx.di;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.logging.HttpLoggingInterceptor;
+import com.tpg.movierx.BuildConfig;
 import com.tpg.movierx.omdb.OmdbApi;
 
 import javax.inject.Singleton;
@@ -35,7 +37,13 @@ public class ApiModule {
     @Provides
     @Singleton
     OkHttpClient provideOkHttpClient() {
-        return new OkHttpClient();
+        OkHttpClient client = new OkHttpClient();
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(System.out::println);
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            client.interceptors().add(logging);
+        }
+        return client;
     }
 
     @Provides
