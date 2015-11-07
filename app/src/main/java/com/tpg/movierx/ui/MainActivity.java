@@ -1,8 +1,10 @@
-package com.tpg.movierx;
+package com.tpg.movierx.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tpg.movierx.MovieApplication;
+import com.tpg.movierx.R;
 import com.tpg.movierx.omdb.OmdbApi;
 
 import org.slf4j.Logger;
