@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
@@ -53,13 +55,16 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!TextUtils.isEmpty(s)) {
-                    api.searchByTitle(s.toString()).subscribe(omdbSearchMovies -> {
-                        adapter.setMovieList(omdbSearchMovies.movies);
-                        popup.show();
-                    }, throwable -> {
-                        logger.error("searching error", throwable);
-                        Snackbar.make(searchText, throwable.toString(), Snackbar.LENGTH_LONG).show();
-                    });
+                    api.searchByTitle(s.toString())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(omdbSearchMovies -> {
+                                adapter.setMovieList(omdbSearchMovies.movies);
+                                popup.show();
+                            }, throwable -> {
+                                logger.error("searching error", throwable);
+                                Snackbar.make(searchText, throwable.toString(), Snackbar.LENGTH_LONG).show();
+                            });
                 } else {
                     adapter.setMovieList(null);
                     popup.dismiss();
