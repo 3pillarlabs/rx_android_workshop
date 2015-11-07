@@ -2,15 +2,20 @@ package com.tpg.movierx;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.sqlbrite.BriteDatabase;
+import com.tpg.movierx.db.MovieItem;
 import com.tpg.movierx.db.Util;
 import com.tpg.movierx.db.WishLists;
 import com.tpg.movierx.omdb.OmdbApi;
 import com.tpg.movierx.omdb.OmdbMovie;
+import com.tpg.movierx.ui.MoviesAdapter;
+import com.tpg.movierx.ui.MoviesRecycler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +41,14 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.searchText)
     EditText searchText;
 
+    @Bind(R.id.movies_list)
+    MoviesRecycler moviesRecycler;
+
+    @Bind(R.id.empty_recycler)
+    View emptyRecyclerView;
+
+    private LinearLayoutManager cardListLayoutManager;
+
     ListPopupWindow popup;
     private MoviePopupAdapter adapter;
 
@@ -50,6 +63,12 @@ public class MainActivity extends BaseActivity {
         adapter = new MoviePopupAdapter(this);
 
         popup.setAdapter(adapter);
+
+        final MoviesAdapter adapter = new MoviesAdapter(this, MovieItem.createDummyMovieList(30));
+        cardListLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        moviesRecycler.setLayoutManager(cardListLayoutManager);
+        moviesRecycler.setEmptyView(emptyRecyclerView);
+        moviesRecycler.setAdapter(adapter);
     }
 
     @Override
