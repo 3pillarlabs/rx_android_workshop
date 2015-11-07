@@ -2,6 +2,7 @@ package com.tpg.movierx.omdb;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,13 +13,15 @@ import java.util.List;
  *      ]
  * }
  */
-public class OmdbSearchMovies {
+public class OmdbSearchMovies extends OmdbResponse {
 
     @SerializedName("Search")
-    public List<OmdbMovie> movies;
+    public List<OmdbMovie> movies = Collections.emptyList();
 
     @Override
     public String toString() {
-        return movies.toString();
+        return "OmdbSearchMovies{" +
+                "movies=" + movies +
+                "} " + super.toString();
     }
 }

@@ -14,7 +14,7 @@ import java.net.URL;
  * }
 */
 
-public class OmdbMovie {
+public class OmdbMovie extends OmdbResponse {
 
     @SerializedName("Title")
     public String title;
