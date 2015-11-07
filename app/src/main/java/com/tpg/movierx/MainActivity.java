@@ -8,12 +8,9 @@ import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
 import com.tpg.movierx.omdb.OmdbApi;
-import com.tpg.movierx.omdb.OmdbMovie;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -43,7 +40,6 @@ public class MainActivity extends BaseActivity {
 
 
         adapter = new MoviePopupAdapter(this);
-        adapter.setMovieList(Arrays.asList(new OmdbMovie("Title 1"), new OmdbMovie("Title 2")));
 
         popup.setAdapter(adapter);
 
@@ -56,8 +52,12 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!TextUtils.isEmpty(s)) {
-                    popup.show();
+                    api.searchByTitle(s.toString()).subscribe(omdbSearchMovies -> {
+                        adapter.setMovieList(omdbSearchMovies.movies);
+                        popup.show();
+                    });
                 } else {
+                    adapter.setMovieList(null);
                     popup.dismiss();
                 }
             }
