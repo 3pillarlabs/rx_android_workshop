@@ -1,6 +1,7 @@
 package com.tpg.movierx;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -55,6 +56,9 @@ public class MainActivity extends BaseActivity {
                     api.searchByTitle(s.toString()).subscribe(omdbSearchMovies -> {
                         adapter.setMovieList(omdbSearchMovies.movies);
                         popup.show();
+                    }, throwable -> {
+                        logger.error("searching error", throwable);
+                        Snackbar.make(searchText, throwable.toString(), Snackbar.LENGTH_LONG).show();
                     });
                 } else {
                     adapter.setMovieList(null);
