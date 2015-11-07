@@ -2,7 +2,7 @@ package com.tpg.movierx.omdb;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.net.URL;
+import java.net.URI;
 
 /**
  * {
@@ -20,7 +20,7 @@ public class OmdbMovie extends OmdbResponse {
     public String title;
 
     @SerializedName("Year")
-    public int year;
+    public String year;
 
     @SerializedName("imdbID")
     public String imdbId;
@@ -29,7 +29,7 @@ public class OmdbMovie extends OmdbResponse {
     public Type type;
 
     @SerializedName("Poster")
-    public URL posterUrl;
+    public URI posterUri;
 
     public OmdbMovie() {
     }
