@@ -55,5 +55,12 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.0.1'
     compile 'com.google.dagger:dagger:2.0.1'
 
+    // DB
+    compile 'com.squareup.sqlbrite:sqlbrite:0.4.1'
+
+    // helper for seamless parceling
+    compile 'com.github.frankiesardo:auto-parcel:0.3'
+    apt 'com.github.frankiesardo:auto-parcel-processor:0.3'
+
     compile 'org.slf4j:slf4j-android:1.6.1-RC1'
 }
