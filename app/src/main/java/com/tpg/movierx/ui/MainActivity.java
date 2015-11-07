@@ -5,9 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
+import com.squareup.sqlbrite.BriteDatabase;
 import com.tpg.movierx.MovieApplication;
 import com.tpg.movierx.R;
 import com.tpg.movierx.db.MovieItem;
+import com.tpg.movierx.db.Util;
 import com.tpg.movierx.omdb.OmdbApi;
 
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -27,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     OmdbApi api;
 
+    @Inject
+    BriteDatabase db;
+
     @Bind(R.id.movies_list)
     MoviesRecycler moviesRecycler;
 
@@ -34,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     View emptyRecyclerView;
 
     private LinearLayoutManager cardListLayoutManager;
+
+    private MoviesAdapter adapter;
+
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +55,34 @@ public class MainActivity extends AppCompatActivity {
 
         logMoviePlotByTitle("Kill Bill");
 
-        final MoviesAdapter adapter = new MoviesAdapter(this, MovieItem.createDummyMovieList(30));
+        adapter = new MoviesAdapter(this);
 
         cardListLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         moviesRecycler.setLayoutManager(cardListLayoutManager);
         moviesRecycler.setEmptyView(emptyRecyclerView);
         moviesRecycler.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        subscription = db.createQuery(MovieItem.TABLE, Util.MOVIES_IN_WISHLIST_QUERY, "1")
+                .mapToList(MovieItem.MAPPER)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(adapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        if(subscription != null) {
+            subscription.unsubscribe();
+        }
+
+        super.onDestroy();
     }
 
     private void logMoviePlotByTitle(final String movieTitle) {

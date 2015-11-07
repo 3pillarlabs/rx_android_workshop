@@ -19,7 +19,13 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 final class DbOpenHelper extends SQLiteOpenHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(DbOpenHelper.class);
+
     private static final int VERSION = 1;
 
     private static final String CREATE_LIST = ""
@@ -53,6 +59,8 @@ final class DbOpenHelper extends SQLiteOpenHelper {
         long myWishListId = db.insert(WishLists.TABLE, null, new WishLists.Builder()
                 .name("MyWishlist")
                 .build());
+        logger.debug("Created MyWishlist, id {}", myWishListId);
+
         db.insert(MovieItem.TABLE, null, new MovieItem.Builder()
                 .listId(myWishListId)
                 .title("Kill Bill: Vol. 1")
