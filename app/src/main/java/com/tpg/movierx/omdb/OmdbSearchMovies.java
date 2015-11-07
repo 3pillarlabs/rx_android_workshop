@@ -16,4 +16,9 @@ public class OmdbSearchMovies {
 
     @SerializedName("Search")
     public List<OmdbMovie> movies;
+
+    @Override
+    public String toString() {
+        return movies.toString();
+    }
 }

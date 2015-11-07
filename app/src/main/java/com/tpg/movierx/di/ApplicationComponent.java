@@ -1,6 +1,7 @@
 package com.tpg.movierx.di;
 
 import com.tpg.movierx.MainActivity;
+import com.tpg.movierx.omdb.OmdbApi;
 
 import javax.inject.Singleton;
 
@@ -19,4 +20,6 @@ import dagger.Component;
 public interface ApplicationComponent {
 
     void inject(MainActivity mainActivity);
+
+    OmdbApi getOmbdApi();
 }
