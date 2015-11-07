@@ -1,6 +1,7 @@
 package com.tpg.movierx.di;
 
 import com.tpg.movierx.MainActivity;
+import com.tpg.movierx.db.DbModule;
 
 import javax.inject.Singleton;
 
@@ -14,7 +15,7 @@ import dagger.Component;
 
 @Singleton
 @Component(
-        modules = ApplicationModule.class
+        modules = {ApplicationModule.class, DbModule.class}
 )
 public interface ApplicationComponent {
 

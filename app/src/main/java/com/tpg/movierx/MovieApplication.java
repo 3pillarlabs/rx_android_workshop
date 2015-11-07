@@ -3,6 +3,7 @@ package com.tpg.movierx;
 import android.app.Application;
 import android.content.Context;
 
+import com.tpg.movierx.db.DbModule;
 import com.tpg.movierx.di.ApplicationComponent;
 import com.tpg.movierx.di.ApplicationModule;
 import com.tpg.movierx.di.DaggerApplicationComponent;
@@ -31,6 +32,7 @@ public class MovieApplication extends Application {
         logger.info("create");
         this.component = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
+                .dbModule(new DbModule(this))
                 .build();
     }
 
