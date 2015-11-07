@@ -18,6 +18,9 @@ package com.tpg.movierx.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import auto.parcel.AutoParcel;
 import rx.functions.Func1;
 
@@ -100,5 +103,38 @@ public abstract class MovieItem {
         public ContentValues build() {
             return values; // TODO defensive copy?
         }
+
+        public MovieItem buildItem() {
+
+            return new AutoParcel_MovieItem(
+                    values.getAsLong(ID),
+                    values.getAsLong(LIST_ID),
+                    values.getAsString(TITLE),
+                    values.getAsString(PLOT),
+                    values.getAsString(ACTORS),
+                    values.getAsString(RATING),
+                    values.getAsString(POSTER)
+            );
+        }
+    }
+
+    public static List<MovieItem> createDummyMovieList(final int size) {
+        final List<MovieItem> movieItemList = new ArrayList<>();
+
+        for (int i = 0; i <= size; i++) {
+            movieItemList.add(
+                    new MovieItem.Builder()
+                            .id(i + 1)
+                            .listId(1)
+                            .title("Movie Title " + i)
+                            .plot("here goes a short description of the movie")
+                            .actors("Actor 1, Actor 2, Actor 3")
+                            .rating("8." + i)
+                            .poster("http://ia.media-imdb.com/images/M/MV5BMTU1NDg1Mzg4M15BMl5BanBnXkFtZTYwMDExOTc3._V1_SX300.jpg")
+                            .buildItem()
+            );
+        }
+
+        return movieItemList;
     }
 }
