@@ -30,12 +30,7 @@ public abstract class WishLists {
 
     public static final String ID = "_id";
     public static final String NAME = "name";
-
-    public abstract long id();
-
-    public abstract String name();
-
-    public static Func1<Cursor, List<WishLists>> MAP = cursor -> {
+    public static Func1<Cursor, List<WishLists>> MAPPER = cursor -> {
         try {
             List<WishLists> values = new ArrayList<>(cursor.getCount());
 
@@ -49,6 +44,10 @@ public abstract class WishLists {
             cursor.close();
         }
     };
+
+    public abstract long id();
+
+    public abstract String name();
 
     public static final class Builder {
         private final ContentValues values = new ContentValues();
