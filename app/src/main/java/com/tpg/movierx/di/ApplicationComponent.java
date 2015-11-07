@@ -1,6 +1,7 @@
 package com.tpg.movierx.di;
 
 import com.tpg.movierx.MainActivity;
+import com.tpg.movierx.MoviePopupAdapter;
 import com.tpg.movierx.omdb.OmdbApi;
 
 import javax.inject.Singleton;
@@ -21,5 +22,9 @@ public interface ApplicationComponent {
 
     void inject(MainActivity mainActivity);
 
+    void inject(MoviePopupAdapter movieAutocompleteAdapter);
+
     OmdbApi getOmbdApi();
+
+
 }

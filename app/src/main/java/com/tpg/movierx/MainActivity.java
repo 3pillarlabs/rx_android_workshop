@@ -1,43 +1,73 @@
 package com.tpg.movierx;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.widget.EditText;
+import android.widget.ListPopupWindow;
 
 import com.tpg.movierx.omdb.OmdbApi;
+import com.tpg.movierx.omdb.OmdbMovie;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import butterknife.Bind;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final Logger logger = LoggerFactory.getLogger("MainActivity");
     @Inject
     OmdbApi api;
+
+
+    @Bind(R.id.searchText)
+    EditText searchText;
+
+    ListPopupWindow popup;
+    private MoviePopupAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MovieApplication.component(this).inject(this);
         setContentView(R.layout.activity_main);
+        popup = new ListPopupWindow(this);
+        popup.setAnchorView(toolbar);
 
-        logMoviePlotByTitle("Kill Bill");
+
+        adapter = new MoviePopupAdapter(this);
+        adapter.setMovieList(Arrays.asList(new OmdbMovie("Title 1"), new OmdbMovie("Title 2")));
+
+        popup.setAdapter(adapter);
+
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!TextUtils.isEmpty(s)) {
+                    popup.show();
+                } else {
+                    popup.dismiss();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
-    private void logMoviePlotByTitle(final String movieTitle) {
-        api
-                .findByTitle(movieTitle)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        movie -> {
-                            logger.debug("Title: {} | Plot: {}", movie.getTitle(), movie.getPlot());
-                        },
-                        error -> logger.error(error.getMessage())
-                );
-    }
 }

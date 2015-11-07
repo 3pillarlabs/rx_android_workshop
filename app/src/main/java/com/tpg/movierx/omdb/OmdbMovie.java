@@ -31,6 +31,14 @@ public class OmdbMovie extends OmdbResponse {
     @SerializedName("Poster")
     public URL posterUrl;
 
+    public OmdbMovie() {
+    }
+
+    public OmdbMovie(String title) {
+        super();
+        this.title = this.imdbId = title;
+    }
+
     @Override
     public String toString() {
         return title + " (" + year + ')';
