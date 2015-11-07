@@ -49,11 +49,11 @@ public class MainActivity extends BaseActivity {
 
 
         RxTextView.textChanges(searchText)
+                //.subscribeOn(AndroidSchedulers.mainThread())
                 .map(CharSequence::toString)
-                .flatMap(api::searchByTitle)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap((title) -> api.searchByTitle(title).subscribeOn(Schedulers.io()))
                 .map(omdbSearchMovies -> omdbSearchMovies.movies)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::setMovies, this::handleError);
 
     }
