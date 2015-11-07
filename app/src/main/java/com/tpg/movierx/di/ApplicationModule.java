@@ -46,7 +46,7 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    OmdbApi provideNaturalInsightApi(OkHttpClient okHttpClient, Gson gson) {
+    OmdbApi provideOmdbApi(OkHttpClient okHttpClient, Gson gson) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.omdbapi.com")
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
