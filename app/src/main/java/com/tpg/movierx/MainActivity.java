@@ -33,7 +33,6 @@ public class MainActivity extends BaseActivity {
     ListPopupWindow popup;
     private MoviePopupAdapter adapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,20 +41,21 @@ public class MainActivity extends BaseActivity {
         popup = new ListPopupWindow(this);
         popup.setAnchorView(toolbar);
 
-
         adapter = new MoviePopupAdapter(this);
 
         popup.setAdapter(adapter);
+    }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
         RxTextView.textChanges(searchText)
-                //.subscribeOn(AndroidSchedulers.mainThread())
                 .map(CharSequence::toString)
-                .flatMap((title) -> api.searchByTitle(title).subscribeOn(Schedulers.io()))
+                .flatMap(title -> api.searchByTitle(title).subscribeOn(Schedulers.io()))
                 .map(omdbSearchMovies -> omdbSearchMovies.movies)
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
                 .subscribe(this::setMovies, this::handleError);
-
     }
 
     private void handleError(Throwable throwable) {
