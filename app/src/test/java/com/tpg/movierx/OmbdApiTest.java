@@ -1,8 +1,6 @@
 package com.tpg.movierx;
 
-import com.tpg.movierx.di.ApplicationComponent;
-import com.tpg.movierx.di.ApplicationModule;
-import com.tpg.movierx.di.DaggerApplicationComponent;
+import com.tpg.movierx.di.DaggerApiComponent;
 import com.tpg.movierx.omdb.OmdbApi;
 import com.tpg.movierx.omdb.OmdbMovie;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
@@ -13,8 +11,6 @@ import org.junit.Test;
 
 import rx.observers.TestSubscriber;
 
-import static org.mockito.Mockito.mock;
-
 /**
  * Created by ciprian.grigor on 07/11/15.
  */
@@ -24,13 +20,7 @@ public class OmbdApiTest {
 
     @Before
     public void setUp() {
-        MovieApplication app = mock(MovieApplication.class);
-
-        ApplicationComponent component = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(app))
-                .build();
-
-        api = component.getOmbdApi();
+        api = DaggerApiComponent.create().getOmbdApi();
     }
 
 
