@@ -1,5 +1,6 @@
 package com.tpg.movierx.di;
 
+import com.squareup.leakcanary.RefWatcher;
 import com.tpg.movierx.MainActivity;
 import com.tpg.movierx.MoviePopupAdapter;
 
@@ -23,4 +24,5 @@ public interface ApplicationComponent {
 
     void inject(MoviePopupAdapter movieAutocompleteAdapter);
 
+    RefWatcher getRefWatcher();
 }
