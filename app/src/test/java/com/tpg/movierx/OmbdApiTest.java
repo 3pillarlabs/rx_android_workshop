@@ -2,7 +2,7 @@ package com.tpg.movierx;
 
 import com.tpg.movierx.di.DaggerApiComponent;
 import com.tpg.movierx.omdb.OmdbApi;
-import com.tpg.movierx.omdb.OmdbMovie;
+import com.tpg.movierx.omdb.OmdbMovieDetails;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
 import com.tpg.movierx.util.RxLog;
 
@@ -39,7 +39,7 @@ public class OmbdApiTest {
 
     @Test
     public void getByTitle() {
-        TestSubscriber<OmdbMovie> sub = new TestSubscriber<>();
+        TestSubscriber<OmdbMovieDetails> sub = new TestSubscriber<>();
 
         api.getByTitle("Star Wars: Episode VII - The Force Awakens").compose(RxLog.logObservable()).subscribe(sub);
 
@@ -54,7 +54,7 @@ public class OmbdApiTest {
 
     @Test
     public void getByTitleNotFound() {
-        TestSubscriber<OmdbMovie> sub = new TestSubscriber<>();
+        TestSubscriber<OmdbMovieDetails> sub = new TestSubscriber<>();
 
         api.getByTitle("Star Wars: Episode XX").compose(RxLog.logObservable()).subscribe(sub);
 
