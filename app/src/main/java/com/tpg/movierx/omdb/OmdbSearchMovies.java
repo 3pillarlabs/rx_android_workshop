@@ -18,6 +18,11 @@ public class OmdbSearchMovies extends OmdbResponse {
     @SerializedName("Search")
     public List<OmdbMovie> movies = Collections.emptyList();
 
+    public OmdbSearchMovies(Throwable throwable) {
+        errorMessage = throwable.toString();
+        success = false;
+    }
+
     @Override
     public String toString() {
         return "OmdbSearchMovies{" +

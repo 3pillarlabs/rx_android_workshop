@@ -14,15 +14,14 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.tpg.movierx.db.MovieItem;
 import com.tpg.movierx.db.Util;
-import com.tpg.movierx.omdb.OmdbApi;
-import com.tpg.movierx.omdb.OmdbMovie;
+import com.tpg.movierx.omdb.OmdbSearchMovies;
+import com.tpg.movierx.service.MovieService;
 import com.tpg.movierx.ui.MoviesAdapter;
 import com.tpg.movierx.ui.MoviesRecycler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -35,7 +34,7 @@ public class MainActivity extends BaseActivity {
 
     private static final Logger logger = LoggerFactory.getLogger("MainActivity");
     @Inject
-    OmdbApi api;
+    MovieService movieService;
 
     @Inject
     BriteDatabase db;
@@ -48,12 +47,9 @@ public class MainActivity extends BaseActivity {
 
     @Bind(R.id.empty_recycler)
     View emptyRecyclerView;
-
-    private LinearLayoutManager cardListLayoutManager;
-
-    private MoviesAdapter moviesListAdapter;
-
     ListPopupWindow popup;
+    private LinearLayoutManager cardListLayoutManager;
+    private MoviesAdapter moviesListAdapter;
     private MoviePopupAdapter adapter;
 
     @Override
@@ -103,8 +99,7 @@ public class MainActivity extends BaseActivity {
         RxTextView.textChanges(searchText)
                 .debounce(250, TimeUnit.MILLISECONDS)
                 .map(CharSequence::toString)
-                .flatMap(title -> api.searchByTitle(title).subscribeOn(Schedulers.io()))
-                .map(omdbSearchMovies -> omdbSearchMovies.movies)
+                .switchMap(movieService::searchMovie)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
                 .subscribe(this::setMovies, this::handleError);
@@ -122,8 +117,14 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    void setMovies(List<OmdbMovie> movies) {
-        adapter.setMovieList(movies);
-        popup.show();
+    void setMovies(OmdbSearchMovies movies) {
+        if (movies.errorMessage == null) {
+            adapter.setMovieList(movies.movies);
+            popup.show();
+        } else {
+            popup.dismiss();
+            Snackbar.make(searchText, movies.errorMessage, Snackbar.LENGTH_SHORT).show();
+        }
+
     }
 }
