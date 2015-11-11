@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         RxTextView.textChanges(searchText)
+                .debounce(250, TimeUnit.MILLISECONDS)
                 .map(CharSequence::toString)
                 .flatMap(title -> api.searchByTitle(title).subscribeOn(Schedulers.io()))
                 .map(omdbSearchMovies -> omdbSearchMovies.movies)
