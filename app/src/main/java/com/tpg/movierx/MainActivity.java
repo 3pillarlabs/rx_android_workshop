@@ -11,7 +11,6 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.tpg.movierx.db.MovieItem;
 import com.tpg.movierx.db.Util;
-import com.tpg.movierx.db.WishLists;
 import com.tpg.movierx.omdb.OmdbApi;
 import com.tpg.movierx.omdb.OmdbMovie;
 import com.tpg.movierx.ui.MoviesAdapter;
@@ -49,6 +48,8 @@ public class MainActivity extends BaseActivity {
 
     private LinearLayoutManager cardListLayoutManager;
 
+    private MoviesAdapter moviesListAdapter;
+
     ListPopupWindow popup;
     private MoviePopupAdapter adapter;
 
@@ -64,11 +65,11 @@ public class MainActivity extends BaseActivity {
 
         popup.setAdapter(adapter);
 
-        final MoviesAdapter adapter = new MoviesAdapter(this, MovieItem.createDummyMovieList(30));
+        moviesListAdapter = new MoviesAdapter(this);
         cardListLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         moviesRecycler.setLayoutManager(cardListLayoutManager);
         moviesRecycler.setEmptyView(emptyRecyclerView);
-        moviesRecycler.setAdapter(adapter);
+        moviesRecycler.setAdapter(moviesListAdapter);
     }
 
     @Override
@@ -83,11 +84,11 @@ public class MainActivity extends BaseActivity {
                 .compose(bindToLifecycle())
                 .subscribe(this::setMovies, this::handleError);
 
-        db.createQuery(WishLists.TABLE, Util.ALL_WISHLISTS_QUERY)
-                .mapToList(WishLists.MAPPER)
+        db.createQuery(MovieItem.TABLE, Util.MOVIES_IN_WISHLIST_QUERY, "1")
+                .mapToList(MovieItem.MAPPER)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list -> logger.debug("Size {}", list.size()));
+                .subscribe(moviesListAdapter);
     }
 
     private void handleError(Throwable throwable) {

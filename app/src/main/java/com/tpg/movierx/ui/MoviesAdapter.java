@@ -12,20 +12,27 @@ import com.tpg.movierx.db.MovieItem;
 import java.util.Collections;
 import java.util.List;
 
+import rx.functions.Action1;
+
 /**
  * Handles a collection of MovieItems
  * <p>
  * Created by karoly.szanto on 07/11/15.
  */
-public class MoviesAdapter extends RecyclerView.Adapter<MovieCardHolder> {
+public class MoviesAdapter extends RecyclerView.Adapter<MovieCardHolder> implements Action1<List<MovieItem>> {
 
     private List<MovieItem> items = Collections.emptyList();
 
     private final LayoutInflater inflater;
 
-    public MoviesAdapter(final Context context, final List<MovieItem> items) {
+    public MoviesAdapter(final Context context) {
         this.inflater = LayoutInflater.from(context);
-        this.items = items;
+    }
+
+    @Override
+    public void call(List<MovieItem> movieItems) {
+        this.items = movieItems;
+        notifyDataSetChanged();
     }
 
     @Override
