@@ -46,6 +46,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.0.14'
 
     compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-design:0.3.0'
     
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'

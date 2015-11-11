@@ -3,10 +3,13 @@ package com.tpg.movierx;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
+import com.jakewharton.rxbinding.support.design.widget.RxSnackbar;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.tpg.movierx.db.MovieItem;
@@ -70,6 +73,28 @@ public class MainActivity extends BaseActivity {
         moviesRecycler.setLayoutManager(cardListLayoutManager);
         moviesRecycler.setEmptyView(emptyRecyclerView);
         moviesRecycler.setAdapter(moviesListAdapter);
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+                final Snackbar snackBar = Snackbar.make(moviesRecycler, R.string.removed_from_wishlist, Snackbar.LENGTH_SHORT);
+                snackBar.setAction(R.string.undo_remove, (view) -> {});
+                snackBar.show();
+
+                RxSnackbar.dismisses(snackBar)
+                        .subscribe(eventId -> { logger.debug("Dismiss event: {})", eventId); /* Check Snackbar.Callback */ });
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(moviesRecycler);
     }
 
     @Override
