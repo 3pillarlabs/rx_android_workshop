@@ -6,6 +6,9 @@ import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.squareup.sqlbrite.BriteDatabase;
+import com.tpg.movierx.db.Util;
+import com.tpg.movierx.db.WishLists;
 import com.tpg.movierx.omdb.OmdbApi;
 import com.tpg.movierx.omdb.OmdbMovie;
 
@@ -27,6 +30,8 @@ public class MainActivity extends BaseActivity {
     @Inject
     OmdbApi api;
 
+    @Inject
+    BriteDatabase db;
 
     @Bind(R.id.searchText)
     EditText searchText;
@@ -58,6 +63,12 @@ public class MainActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
                 .subscribe(this::setMovies, this::handleError);
+
+        db.createQuery(WishLists.TABLE, Util.ALL_WISHLISTS_QUERY)
+                .mapToList(WishLists.MAPPER)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> logger.debug("Size {}", list.size()));
     }
 
     private void handleError(Throwable throwable) {
