@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import jp.wasabeef.recyclerview.animators.OvershootInRightAnimator;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -72,7 +73,7 @@ public class MainActivity extends BaseActivity {
         moviesRecycler.setLayoutManager(cardListLayoutManager);
         moviesRecycler.setEmptyView(emptyRecyclerView);
         moviesRecycler.setAdapter(moviesListAdapter);
-
+        moviesRecycler.setItemAnimator(new OvershootInRightAnimator());
 
         popup.setOnItemClickListener((parent, view, position, id) -> {
             OmdbMovie movie = (OmdbMovie) adapter.getItem(position);
@@ -101,12 +102,35 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
+                final int position = viewHolder.getAdapterPosition();
+                final MovieItem item = moviesListAdapter.getItemAt(position);
+
                 final Snackbar snackBar = Snackbar.make(moviesRecycler, R.string.removed_from_wishlist, Snackbar.LENGTH_SHORT);
                 snackBar.setAction(R.string.undo_remove, (view) -> {});
                 snackBar.show();
 
+                final BriteDatabase.Transaction transaction = db.newTransaction();
+                db.delete(MovieItem.TABLE, MovieItem.ID + " = ?", item.id() + "");
+                moviesListAdapter.removeItemAt(position);
+
                 RxSnackbar.dismisses(snackBar)
-                        .subscribe(eventId -> { logger.debug("Dismiss event: {})", eventId); /* Check Snackbar.Callback */ });
+                        .firstOrDefault(0)
+                        .subscribe(
+                                eventId -> {
+                                    if (eventId == Snackbar.Callback.DISMISS_EVENT_ACTION) {
+                                        logger.debug("Undoing ...");
+                                        moviesListAdapter.insertItemAt(item, position);
+                                    } else {
+                                        logger.debug("Deleting ...");
+                                        transaction.markSuccessful();
+                                    }
+                                },
+                                throwable -> logger.error(throwable.getMessage()),
+                                () -> {
+                                    logger.debug("Closing transaction");
+                                    transaction.end();
+                                }
+                        );
             }
         };
 
@@ -153,6 +177,5 @@ public class MainActivity extends BaseActivity {
             popup.dismiss();
             Snackbar.make(searchText, movies.errorMessage, Snackbar.LENGTH_LONG).show();
         }
-
     }
 }

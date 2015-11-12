@@ -50,4 +50,18 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieCardHolder> impleme
     public int getItemCount() {
         return items.size();
     }
+
+    public MovieItem getItemAt(final int position) {
+        return items.get(position);
+    }
+
+    public void insertItemAt(final MovieItem item, final int position) {
+        items.add(position, item);
+        notifyItemInserted(position);
+    }
+
+    public void removeItemAt(final int position) {
+        items.remove(position);
+        notifyItemRemoved(position);
+    }
 }
