@@ -56,7 +56,7 @@ public class MoviePopupAdapter extends BaseAdapter {
         View view;
 
         if (convertView == null) {
-            view = inflater.inflate(android.R.layout.simple_dropdown_item_1line, parent, false);
+            view = inflater.inflate(R.layout.movie_dropdown_item, parent, false);
         } else {
             view = convertView;
         }

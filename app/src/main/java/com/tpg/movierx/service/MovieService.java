@@ -1,7 +1,11 @@
 package com.tpg.movierx.service;
 
+import com.squareup.sqlbrite.BriteDatabase;
+import com.tpg.movierx.db.MovieItem;
 import com.tpg.movierx.omdb.OmdbApi;
+import com.tpg.movierx.omdb.OmdbMovie;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
+import com.tpg.movierx.service.transformer.OmdbMovieToDb;
 import com.tpg.movierx.util.RxLog;
 
 import javax.inject.Inject;
@@ -17,16 +21,25 @@ import rx.schedulers.Schedulers;
 public class MovieService {
 
     private OmdbApi api;
+    private BriteDatabase db;
 
     @Inject
-    public MovieService(OmdbApi api) {
+    public MovieService(OmdbApi api, BriteDatabase db) {
         this.api = api;
+        this.db = db;
     }
 
     public Observable<OmdbSearchMovies> searchMovie(String title) {
         return api.searchByTitle(title).compose(RxLog.logObservable())
                 .retry(3)
                 .onErrorReturn(OmdbSearchMovies::new)
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Long> saveMovie(OmdbMovie item) {
+        return api.getByTitle(item.title)
+                .map(OmdbMovieToDb::buildMovieItemDb)
+                .map(cv -> db.insert(MovieItem.TABLE, cv))
                 .subscribeOn(Schedulers.io());
     }
 }

@@ -14,10 +14,12 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.tpg.movierx.db.MovieItem;
 import com.tpg.movierx.db.Util;
+import com.tpg.movierx.omdb.OmdbMovie;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
 import com.tpg.movierx.service.MovieService;
 import com.tpg.movierx.ui.MoviesAdapter;
 import com.tpg.movierx.ui.MoviesRecycler;
+import com.tpg.movierx.util.RxLog;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -70,6 +73,24 @@ public class MainActivity extends BaseActivity {
         moviesRecycler.setEmptyView(emptyRecyclerView);
         moviesRecycler.setAdapter(moviesListAdapter);
 
+
+        popup.setOnItemClickListener((parent, view, position, id) -> {
+            OmdbMovie movie = (OmdbMovie) adapter.getItem(position);
+            movieService.saveMovie((OmdbMovie) adapter.getItem(position))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(RxLog.logObservable())
+                    .subscribe(
+                            savedId -> {
+                                popup.dismiss();
+                                moviesRecycler.smoothScrollToPosition(moviesListAdapter.getItemCount());
+                            },
+                            throwable ->
+                                    Snackbar.make(searchText, throwable.toString(), Snackbar.LENGTH_LONG).show()
+                    );
+
+
+        });
+
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
 
             @Override
@@ -96,13 +117,20 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        RxTextView.textChanges(searchText)
-                .debounce(250, TimeUnit.MILLISECONDS)
+
+        Observable<CharSequence> searchObs = RxTextView.textChanges(searchText);
+
+        searchObs.debounce(250, TimeUnit.MILLISECONDS)
+                .filter(charSequence -> charSequence.length() > 1)
                 .map(CharSequence::toString)
                 .switchMap(movieService::searchMovie)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
                 .subscribe(this::setMovies, this::handleError);
+
+
+        searchObs.filter(charSequence -> charSequence.length() <= 1)
+                .subscribe(charSequence -> popup.dismiss());
 
         db.createQuery(MovieItem.TABLE, Util.MOVIES_IN_WISHLIST_QUERY, "1")
                 .mapToList(MovieItem.MAPPER)
@@ -123,7 +151,7 @@ public class MainActivity extends BaseActivity {
             popup.show();
         } else {
             popup.dismiss();
-            Snackbar.make(searchText, movies.errorMessage, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(searchText, movies.errorMessage, Snackbar.LENGTH_LONG).show();
         }
 
     }

@@ -19,6 +19,6 @@ public class Util {
             + " WHERE "
             + MovieItem.LIST_ID
             + " = ? ORDER BY "
-            + MovieItem.TITLE
+            + MovieItem.ID
             + " ASC";
 }

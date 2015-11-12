@@ -26,6 +26,8 @@ public class OmdbMovieDetails extends OmdbMovie {
     @SerializedName("Plot")
     public String plot;
 
+    public String imdbRating;
+
     @Override
     public String toString() {
         return "OmdbMovieDetails{" +
