@@ -42,7 +42,7 @@ public class MoviePopupAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public OmdbMovie getItem(int position) {
         return data.get(position);
     }
 

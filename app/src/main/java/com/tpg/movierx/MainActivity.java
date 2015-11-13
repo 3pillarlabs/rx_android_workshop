@@ -10,12 +10,13 @@ import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
 import com.jakewharton.rxbinding.support.design.widget.RxSnackbar;
+import com.jakewharton.rxbinding.widget.AdapterViewItemClickEvent;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.tpg.movierx.db.MovieItem;
 import com.tpg.movierx.db.Util;
-import com.tpg.movierx.omdb.OmdbMovie;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
+import com.tpg.movierx.rxbinding.RxListPopupWindow;
 import com.tpg.movierx.service.MovieService;
 import com.tpg.movierx.ui.MoviesAdapter;
 import com.tpg.movierx.ui.MoviesRecycler;
@@ -75,22 +76,21 @@ public class MainActivity extends BaseActivity {
         moviesRecycler.setAdapter(moviesListAdapter);
         moviesRecycler.setItemAnimator(new OvershootInRightAnimator());
 
-        popup.setOnItemClickListener((parent, view, position, id) -> {
-            OmdbMovie movie = (OmdbMovie) adapter.getItem(position);
-            movieService.saveMovie((OmdbMovie) adapter.getItem(position))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .compose(RxLog.logObservable())
-                    .subscribe(
-                            savedId -> {
-                                popup.dismiss();
-                                moviesRecycler.smoothScrollToPosition(moviesListAdapter.getItemCount());
-                            },
-                            throwable ->
-                                    Snackbar.make(searchText, throwable.toString(), Snackbar.LENGTH_LONG).show()
-                    );
 
-
-        });
+        RxListPopupWindow.itemClickEvents(popup)
+                .map(AdapterViewItemClickEvent::position)
+                .map(adapter::getItem)
+                .onBackpressureDrop(item -> RxLog.log("drop", item))
+                .flatMap(movieService::saveMovie, 1)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        savedId -> {
+                            popup.dismiss();
+                            moviesRecycler.smoothScrollToPosition(moviesListAdapter.getItemCount());
+                        },
+                        throwable ->
+                                Snackbar.make(searchText, throwable.toString(), Snackbar.LENGTH_LONG).show()
+                );
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
 
