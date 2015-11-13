@@ -13,35 +13,45 @@ import rx.Observer;
  */
 public class RxLog {
 
-    public static <T> void log(T item) {
-        System.out.println(DateFormat.getTimeInstance().format(new Date(System.currentTimeMillis())) + "\t" + Thread.currentThread().getName() + "\t" + item);
+    public static void log(Object source, Object item) {
+        System.out.println(DateFormat.getTimeInstance().format(new Date(System.currentTimeMillis()))
+                + "\t" + source
+                + "\t" + Thread.currentThread().getName()
+                + "\t" + item);
     }
 
-    public static <T> T logAndReturn(T item) {
-        log(item);
-        return item;
+    public static void log(Object source, Throwable throwable) {
+        System.out.println(DateFormat.getTimeInstance().format(new Date(System.currentTimeMillis()))
+                + "\t" + source
+                + "\t" + Thread.currentThread().getName()
+                + "\t" + throwable);
+        throwable.printStackTrace();
     }
 
     public static <T> Observer<T> logObeserver() {
         return new Observer<T>() {
             @Override
             public void onCompleted() {
-               log(this + " onCompleted");
+                log(this, "completed");
             }
 
             @Override
             public void onError(Throwable e) {
-                log(this + " onError " + e);
+                log(this, e);
             }
 
             @Override
             public void onNext(T t) {
-                log(this + " onNext " + t);
+                log(this, t);
             }
         };
     }
 
     public static <T> Observable.Transformer<T,T> logObservable() {
-        return observable -> observable.doOnNext(RxLog::log).doOnError(RxLog::log).doOnCompleted(() -> RxLog.log("completed"));
+        return observable -> observable
+                .doOnSubscribe(() -> log(observable, "subscribe"))
+                .doOnNext(item -> log(observable, item))
+                .doOnError(throwable -> log(observable, throwable))
+                .doOnCompleted(() -> log(observable, "completed"));
     }
 }
