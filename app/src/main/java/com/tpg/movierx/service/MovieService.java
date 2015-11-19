@@ -30,7 +30,7 @@ public class MovieService {
     }
 
     public Observable<OmdbSearchMovies> searchMovie(String title) {
-        return api.searchByTitle(title).compose(RxLog.logObservable())
+        return api.searchByTitle(title).compose(RxLog.insertLog())
                 .retry(3)
                 .onErrorReturn(OmdbSearchMovies::new)
                 .subscribeOn(Schedulers.io());

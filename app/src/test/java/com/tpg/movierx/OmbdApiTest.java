@@ -28,7 +28,7 @@ public class OmbdApiTest {
     public void searchByTitle() {
         TestSubscriber<OmdbSearchMovies> sub = new TestSubscriber<>();
 
-        api.searchByTitle("star").compose(RxLog.logObservable()).subscribe(sub);
+        api.searchByTitle("star").compose(RxLog.insertLog()).subscribe(sub);
 
         sub.awaitTerminalEvent();
         sub.assertNoErrors();
@@ -41,7 +41,7 @@ public class OmbdApiTest {
     public void getByTitle() {
         TestSubscriber<OmdbMovieDetails> sub = new TestSubscriber<>();
 
-        api.getByTitle("Star Wars: Episode VII - The Force Awakens").compose(RxLog.logObservable()).subscribe(sub);
+        api.getByTitle("Star Wars: Episode VII - The Force Awakens").compose(RxLog.insertLog()).subscribe(sub);
 
         sub.awaitTerminalEvent();
         sub.assertNoErrors();
@@ -56,7 +56,7 @@ public class OmbdApiTest {
     public void getByTitleNotFound() {
         TestSubscriber<OmdbMovieDetails> sub = new TestSubscriber<>();
 
-        api.getByTitle("Star Wars: Episode XX").compose(RxLog.logObservable()).subscribe(sub);
+        api.getByTitle("Star Wars: Episode XX").compose(RxLog.insertLog()).subscribe(sub);
 
         sub.awaitTerminalEvent();
         sub.assertNoErrors();
@@ -70,7 +70,7 @@ public class OmbdApiTest {
     public void searchByTitleNotFound() {
         TestSubscriber<OmdbSearchMovies> sub = new TestSubscriber<>();
 
-        api.searchByTitle("Star Wars: Episode XX").compose(RxLog.logObservable()).subscribe(sub);
+        api.searchByTitle("Star Wars: Episode XX").compose(RxLog.insertLog()).subscribe(sub);
 
         sub.awaitTerminalEvent();
         sub.assertNoErrors();

@@ -28,7 +28,7 @@ public class RxLog {
         throwable.printStackTrace();
     }
 
-    public static <T> Observer<T> logObeserver() {
+    public static <T> Observer<T> logObserver() {
         return new Observer<T>() {
             @Override
             public void onCompleted() {
@@ -47,7 +47,7 @@ public class RxLog {
         };
     }
 
-    public static <T> Observable.Transformer<T,T> logObservable() {
+    public static <T> Observable.Transformer<T, T> insertLog() {
         return observable -> observable
                 .doOnSubscribe(() -> log(observable, "subscribe"))
                 .doOnNext(item -> log(observable, item))
