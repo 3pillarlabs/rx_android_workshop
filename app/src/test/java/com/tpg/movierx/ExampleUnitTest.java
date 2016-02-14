@@ -1,5 +1,7 @@
 package com.tpg.movierx;
 
+import com.tpg.movierx.util.RxLog;
+
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -53,6 +55,7 @@ public class ExampleUnitTest {
         Observable.interval(500, TimeUnit.MILLISECONDS)
                 .filter(number -> number % 2 == 0)
                 .take(5)
+                .compose(RxLog::log)
                 .subscribe(testSubscriber);
 
         testSubscriber.awaitTerminalEvent();
