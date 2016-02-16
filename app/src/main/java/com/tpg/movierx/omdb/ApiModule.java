@@ -38,7 +38,7 @@ public class ApiModule {
     @Singleton
     OkHttpClient provideOkHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG && false) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor(System.out::println);
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(logging);

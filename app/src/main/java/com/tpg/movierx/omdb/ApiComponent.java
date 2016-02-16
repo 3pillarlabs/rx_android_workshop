@@ -1,5 +1,7 @@
 package com.tpg.movierx.omdb;
 
+import com.tpg.movierx.service.MovieService;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -13,4 +15,6 @@ import dagger.Component;
 )
 public interface ApiComponent {
     OmdbApi getOmbdApi();
+
+    MovieService getMoviewService();
 }
