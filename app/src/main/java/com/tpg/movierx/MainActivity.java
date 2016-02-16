@@ -54,7 +54,10 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!TextUtils.isEmpty(s)) {
-                    popup.show();
+                    omdbApi.searchByTitle(s.toString()).subscribe(omdbSearchMovies -> {
+                        adapter.setMovieList(omdbSearchMovies.movies);
+                        popup.show();
+                    });
                 } else {
                     popup.dismiss();
                 }
