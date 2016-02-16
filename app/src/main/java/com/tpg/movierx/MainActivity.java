@@ -6,32 +6,31 @@ import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.tpg.movierx.omdb.OmdbApi;
-import com.tpg.movierx.omdb.OmdbMovie;
+import com.tpg.movierx.omdb.OmdbSearchMovies;
+import com.tpg.movierx.service.MovieService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
     private static final Logger logger = LoggerFactory.getLogger("MainActivity");
 
     @Inject
-    OmdbApi omdbApi;
+    MovieService movieService;
 
     @Bind(R.id.searchText)
     EditText searchText;
 
     ListPopupWindow popup;
     MoviePopupAdapter adapter;
+
+    Snackbar searchErrorSnackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,23 +42,37 @@ public class MainActivity extends BaseActivity {
         popup.setAnchorView(toolbar);
         adapter = new MoviePopupAdapter();
         popup.setAdapter(adapter);
-
-        RxTextView.textChanges(searchText)
-                .map(CharSequence::toString)
-                .flatMap(title -> omdbApi.searchByTitle(title).subscribeOn(Schedulers.io()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(omdbSearchMovies -> omdbSearchMovies.movies)
-                .subscribe(this::setMovies, this::handleError);
     }
 
-    private void handleError(Throwable throwable) {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        RxTextView.textChanges(searchText)
+                .compose(movieService::searchMovie)
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
+                .subscribe(this::setMoviesResult, this::handleError);
+    }
+
+    void handleError(Throwable throwable) {
         logger.error("searching error", throwable);
         Snackbar.make(searchText, throwable.toString(), Snackbar.LENGTH_LONG).show();
     }
 
-    void setMovies(List<OmdbMovie> movies) {
-        adapter.setMovieList(movies);
-        popup.show();
+
+    void setMoviesResult(OmdbSearchMovies movieResult) {
+        adapter.setMovieList(movieResult.movies);
+        if (movieResult.success) {
+            popup.show();
+            if (searchErrorSnackbar != null) {
+                searchErrorSnackbar.dismiss();
+                searchErrorSnackbar = null;
+            }
+        } else {
+            popup.dismiss();
+            searchErrorSnackbar = Snackbar.make(searchText, movieResult.errorMessage, Snackbar.LENGTH_LONG);
+            searchErrorSnackbar.show();
+        }
     }
 
 }
