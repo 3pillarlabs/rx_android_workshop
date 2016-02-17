@@ -2,6 +2,7 @@ package com.tpg.movierx;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
@@ -58,6 +59,7 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         RxTextView.textChanges(searchText)
+                .filter(TextUtils::isEmpty)
                 .compose(movieService::searchMovie)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
