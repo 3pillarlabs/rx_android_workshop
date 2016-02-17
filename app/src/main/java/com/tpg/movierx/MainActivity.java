@@ -8,13 +8,13 @@ import android.widget.ListPopupWindow;
 
 import com.jakewharton.rxbinding.widget.AdapterViewItemClickEvent;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.tpg.movierx.db.dao.MovieItemDao;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
 import com.tpg.movierx.rxbinding.RxListPopupWindow;
 import com.tpg.movierx.service.MovieService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -27,6 +27,9 @@ public class MainActivity extends BaseActivity {
 
     @Inject
     MovieService movieService;
+
+    @Inject
+    MovieItemDao movieItemDao;
 
     @Bind(R.id.searchText)
     EditText searchText;

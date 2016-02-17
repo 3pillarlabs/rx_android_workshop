@@ -62,6 +62,13 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.6'
     debugCompile 'org.slf4j:slf4j-android:1.7.6'
     releaseCompile 'org.slf4j:slf4j-nop:1.7.6'
+
+    // SQLBrite
+    compile 'com.squareup.sqlbrite:sqlbrite:0.5.1'
+    // helper for seamless parceling
+    compile 'com.github.frankiesardo:auto-parcel:0.3.1'
+    apt 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
+
     // Test
     testCompile 'junit:junit:4.12'
 }
