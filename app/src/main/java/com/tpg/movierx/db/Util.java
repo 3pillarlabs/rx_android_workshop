@@ -8,8 +8,8 @@ import com.tpg.movierx.db.model.MovieItem;
 public class Util {
 
     public static final String ALL_MOVIES_QUERY = "SELECT * FROM "
-            + MovieItem.TABLE
-            + " ORDER BY "
-            + MovieItem.TITLE
-            + " ASC";
+            + MovieItem.TABLE;
+//            + " ORDER BY "
+//            + MovieItem.TITLE
+//            + " ASC";
 }

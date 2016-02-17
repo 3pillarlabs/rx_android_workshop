@@ -1,7 +1,10 @@
 package com.tpg.movierx.service;
 
+import com.tpg.movierx.db.dao.MovieItemDao;
 import com.tpg.movierx.omdb.OmdbApi;
+import com.tpg.movierx.omdb.OmdbMovie;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
+import com.tpg.movierx.service.transformer.OmdbMovieToDb;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,10 +21,12 @@ import rx.schedulers.Schedulers;
 public class MovieService {
 
     private OmdbApi omdbApi;
+    private MovieItemDao dao;
 
     @Inject
-    public MovieService(OmdbApi omdbApi) {
+    public MovieService(OmdbApi omdbApi, MovieItemDao dao) {
         this.omdbApi = omdbApi;
+        this.dao = dao;
     }
 
     public Observable<OmdbSearchMovies> searchMovie(Observable<CharSequence> inputObservable) {
@@ -38,4 +43,11 @@ public class MovieService {
                 .subscribeOn(Schedulers.io());
     }
 
+    public Observable<Long> saveMovie(OmdbMovie item) {
+        return omdbApi.getByTitle(item.title)
+                .retry(2)
+                .map(OmdbMovieToDb::buildMovieItemDb)
+                .map(dao::insert)
+                .subscribeOn(Schedulers.io());
+    }
 }

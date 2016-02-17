@@ -1,6 +1,8 @@
 package com.tpg.movierx;
 
+import com.tpg.movierx.db.dao.MovieItemDao;
 import com.tpg.movierx.omdb.DaggerApiComponent;
+import com.tpg.movierx.omdb.OmdbApi;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
 import com.tpg.movierx.service.MovieService;
 import com.tpg.movierx.util.RxLog;
@@ -15,16 +17,21 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
+import static org.mockito.Mockito.mock;
+
 /**
  * Created by ciprian.grigor on 16/02/16.
  */
 public class MovieServiceTest {
 
     MovieService movieService;
+    MovieItemDao movieItemDao;
 
     @Before
     public void setUp() {
-        movieService = DaggerApiComponent.create().getMoviewService();
+        OmdbApi omdbApi = DaggerApiComponent.create().getOmbdApi();
+        movieItemDao = mock(MovieItemDao.class);
+        movieService = new MovieService(omdbApi, movieItemDao);
     }
 
     @Test
@@ -48,7 +55,6 @@ public class MovieServiceTest {
         subscriber.assertNoErrors();
         Assert.assertTrue(subscriber.getOnNextEvents().get(0).toLowerCase().contains("empire at"));
     }
-
 
     String extractFirstTitle(OmdbSearchMovies searchMovies) {
         if (searchMovies.movies == null || searchMovies.movies.isEmpty()) {
