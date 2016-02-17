@@ -9,6 +9,7 @@ import com.tpg.movierx.db.model.MovieItem;
 import java.util.List;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by karoly.szanto on 17/02/16.
@@ -22,7 +23,9 @@ public class MovieItemDao {
     }
 
     public Observable<List<MovieItem>> allMovieItems() {
-        return db.createQuery(MovieItem.TABLE, Util.ALL_MOVIES_QUERY).mapToList(MovieItem.MAPPER);
+        return db.createQuery(MovieItem.TABLE, Util.ALL_MOVIES_QUERY)
+                .mapToList(MovieItem.MAPPER)
+                .subscribeOn(Schedulers.io());
     }
 
     public long insert(final ContentValues movieItem) {

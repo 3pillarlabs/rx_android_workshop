@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
@@ -87,6 +88,10 @@ public class MainActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
                 .subscribe(this::setMoviesResult, this::handleError);
+
+        movieItemDao.allMovieItems()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(moviesListAdapter);
     }
 
     void handleError(Throwable throwable) {
