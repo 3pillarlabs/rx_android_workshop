@@ -5,9 +5,10 @@ import android.support.design.widget.Snackbar;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
+import com.jakewharton.rxbinding.widget.AdapterViewItemClickEvent;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.tpg.movierx.omdb.OmdbMovie;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
+import com.tpg.movierx.rxbinding.RxListPopupWindow;
 import com.tpg.movierx.service.MovieService;
 
 import org.slf4j.Logger;
@@ -44,11 +45,13 @@ public class MainActivity extends BaseActivity {
         adapter = new MoviePopupAdapter();
         popup.setAdapter(adapter);
 
-        popup.setOnItemClickListener((parent, view, position, id) -> {
-            OmdbMovie movie = adapter.getItem(position);
-            popup.dismiss();
-            Snackbar.make(searchText, movie + " selected", Snackbar.LENGTH_LONG).show();
-        });
+        RxListPopupWindow.itemClickEvents(popup)
+                .map(AdapterViewItemClickEvent::position)
+                .map(adapter::getItem)
+                .subscribe(movie -> {
+                    popup.dismiss();
+                    Snackbar.make(searchText, movie + " selected", Snackbar.LENGTH_LONG).show();
+                });
     }
 
     @Override
