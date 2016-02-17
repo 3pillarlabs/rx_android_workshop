@@ -25,15 +25,7 @@ public class MovieItemDao {
         return db.createQuery(MovieItem.TABLE, Util.ALL_MOVIES_QUERY).mapToList(MovieItem.MAPPER);
     }
 
-    public long insert(final String title, final String actors, final String plot, final String imdRating, final String poster) {
-        final ContentValues movieItem = new MovieItem.Builder()
-                .title(title)
-                .actors(actors)
-                .plot(plot)
-                .rating(imdRating)
-                .poster(poster)
-                .build();
-
+    public long insert(final ContentValues movieItem) {
         return db.insert(MovieItem.TABLE, movieItem);
     }
 }

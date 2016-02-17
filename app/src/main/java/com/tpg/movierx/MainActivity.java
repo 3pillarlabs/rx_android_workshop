@@ -2,7 +2,9 @@ package com.tpg.movierx;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
@@ -12,6 +14,8 @@ import com.tpg.movierx.db.dao.MovieItemDao;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
 import com.tpg.movierx.rxbinding.RxListPopupWindow;
 import com.tpg.movierx.service.MovieService;
+import com.tpg.movierx.ui.MoviesAdapter;
+import com.tpg.movierx.ui.MoviesRecycler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +38,19 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.searchText)
     EditText searchText;
 
+    @Bind(R.id.movies_list)
+    MoviesRecycler moviesRecycler;
+
+    @Bind(R.id.empty_recycler)
+    View emptyRecyclerView;
+
     ListPopupWindow popup;
     MoviePopupAdapter adapter;
 
     Snackbar searchErrorSnackbar;
+
+    private LinearLayoutManager cardListLayoutManager;
+    private MoviesAdapter moviesListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +62,12 @@ public class MainActivity extends BaseActivity {
         popup.setAnchorView(toolbar);
         adapter = new MoviePopupAdapter();
         popup.setAdapter(adapter);
+
+        moviesListAdapter = new MoviesAdapter(this);
+        cardListLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        moviesRecycler.setLayoutManager(cardListLayoutManager);
+        moviesRecycler.setEmptyView(emptyRecyclerView);
+        moviesRecycler.setAdapter(moviesListAdapter);
 
         RxListPopupWindow.itemClickEvents(popup)
                 .map(AdapterViewItemClickEvent::position)

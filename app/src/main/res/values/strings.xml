@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MovieRx</string>
+    <string name="empty_wishlist">Empty!</string>
 </resources>
