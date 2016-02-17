@@ -14,6 +14,7 @@ import com.tpg.movierx.service.MovieService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -59,7 +60,7 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         RxTextView.textChanges(searchText)
-                .filter(TextUtils::isEmpty)
+                .filter(text -> !TextUtils.isEmpty(text))
                 .compose(movieService::searchMovie)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
