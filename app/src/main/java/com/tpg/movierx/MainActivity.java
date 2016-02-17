@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.ListPopupWindow;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.tpg.movierx.omdb.OmdbMovie;
 import com.tpg.movierx.omdb.OmdbSearchMovies;
 import com.tpg.movierx.service.MovieService;
 
@@ -42,6 +43,12 @@ public class MainActivity extends BaseActivity {
         popup.setAnchorView(toolbar);
         adapter = new MoviePopupAdapter();
         popup.setAdapter(adapter);
+
+        popup.setOnItemClickListener((parent, view, position, id) -> {
+            OmdbMovie movie = adapter.getItem(position);
+            popup.dismiss();
+            Snackbar.make(searchText, movie + " selected", Snackbar.LENGTH_LONG).show();
+        });
     }
 
     @Override
