@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
@@ -77,6 +76,24 @@ public class MainActivity extends BaseActivity {
                     popup.dismiss();
                     Snackbar.make(searchText, movie + " selected", Snackbar.LENGTH_LONG).show();
                 });
+
+        RxListPopupWindow.itemClickEvents(popup)
+                .map(AdapterViewItemClickEvent::position)
+                .map(adapter::getItem)
+                .onBackpressureDrop(item -> logger.info("backpressure drop {}", item))
+                .flatMap(movieService::saveMovie, 1)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        notif -> {
+                            if (notif.isOnNext()) {
+                                popup.dismiss();
+                                moviesRecycler.smoothScrollToPosition(moviesListAdapter.getItemCount());
+                            }
+                            if (notif.hasThrowable()) {
+                                Snackbar.make(searchText, notif.getThrowable().getMessage(), Snackbar.LENGTH_LONG).show();
+                            }
+                        }
+                );
     }
 
     @Override

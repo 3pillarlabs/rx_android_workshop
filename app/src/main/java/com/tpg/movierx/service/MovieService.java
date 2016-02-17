@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import rx.Notification;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -43,11 +44,12 @@ public class MovieService {
                 .subscribeOn(Schedulers.io());
     }
 
-    public Observable<Long> saveMovie(OmdbMovie item) {
+    public Observable<Notification<Long>> saveMovie(OmdbMovie item) {
         return omdbApi.getByTitle(item.title)
                 .retry(2)
                 .map(OmdbMovieToDb::buildMovieItemDb)
                 .map(dao::insert)
+                .materialize()
                 .subscribeOn(Schedulers.io());
     }
 }
