@@ -25,15 +25,16 @@ public class MovieService {
     private MovieItemDao dao;
 
     @Inject
-    public MovieService(OmdbApi omdbApi, MovieItemDao dao) {
+    public MovieService(
+            OmdbApi omdbApi,
+            MovieItemDao dao) {
         this.omdbApi = omdbApi;
         this.dao = dao;
     }
 
-    public Observable<OmdbSearchMovies> searchMovie(Observable<CharSequence> inputObservable) {
+    public Observable<OmdbSearchMovies> searchMovie(Observable<String> inputObservable) {
         return inputObservable
                 .debounce(250, TimeUnit.MILLISECONDS)//avoid too many requests
-                .map(CharSequence::toString)
                 .switchMap(this::searchMovie);
     }
 

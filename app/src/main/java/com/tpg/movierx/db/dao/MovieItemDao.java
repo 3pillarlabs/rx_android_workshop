@@ -8,16 +8,21 @@ import com.tpg.movierx.db.model.MovieItem;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by karoly.szanto on 17/02/16.
  */
+@Singleton
 public class MovieItemDao {
 
     private final BriteDatabase db;
 
+    @Inject
     public MovieItemDao(final BriteDatabase db) {
         this.db = db;
     }

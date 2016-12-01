@@ -16,7 +16,10 @@ import dagger.Component;
 
 @Singleton
 @Component(
-        modules = {ApplicationModule.class, ApiModule.class, DbModule.class}
+        modules = {
+                ApplicationModule.class,
+                ApiModule.class,
+                DbModule.class}
 )
 public interface ApplicationComponent {
 

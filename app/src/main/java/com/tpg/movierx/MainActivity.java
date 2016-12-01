@@ -101,6 +101,7 @@ public class MainActivity extends BaseActivity {
         super.onStart();
         RxTextView.textChanges(searchText)
                 .filter(text -> !TextUtils.isEmpty(text))
+                .map(CharSequence::toString)
                 .compose(movieService::searchMovie)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())

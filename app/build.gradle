@@ -4,7 +4,7 @@ apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '24.0.0rc1'
 
     defaultConfig {
         applicationId "com.tpg.movierx"
@@ -35,11 +35,9 @@ dependencies {
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.android.support:support-annotations:23.1.1'
     compile 'com.android.support:design:23.1.1'
-
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:cardview-v7:23.1.1'
     compile 'com.github.bumptech.glide:glide:3.6.1'
-
     // RX
     compile 'io.reactivex:rxandroid:1.1.0'
     // Because RxAndroid releases are few and far between, it is recommended you also
@@ -48,7 +46,6 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
     compile 'com.trello:rxlifecycle:0.4.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'
-
     // Dependency Injection
     provided 'javax.annotation:jsr250-api:1.0'
     apt 'com.google.dagger:dagger-compiler:2.0.1'
@@ -61,19 +58,16 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
     compile 'com.squareup.okhttp3:okhttp:3.1.2'
     compile 'com.squareup.okhttp3:logging-interceptor:3.1.2'
-
     // slf4j - logging library
     compile 'org.slf4j:slf4j-api:1.7.6'
     debugCompile 'org.slf4j:slf4j-android:1.7.6'
     releaseCompile 'org.slf4j:slf4j-nop:1.7.6'
-
     // SQLBrite
     compile 'com.squareup.sqlbrite:sqlbrite:0.5.1'
     // helper for seamless parceling
     compile 'com.github.frankiesardo:auto-parcel:0.3.1'
     apt 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
-
     // Test
     testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:1.+"
+    testCompile 'org.mockito:mockito-core:1.+'
 }

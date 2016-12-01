@@ -1,5 +1,6 @@
 package com.tpg.movierx.exercise1;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import rx.Observable;
@@ -8,6 +9,7 @@ import rx.observers.TestSubscriber;
 /**
  * Created by karoly.szanto on 16/02/16.
  */
+@Ignore
 public class ExploreSimpleOperatorsTest {
 
     /**

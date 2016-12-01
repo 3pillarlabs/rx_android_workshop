@@ -53,9 +53,4 @@ public final class DbModule {
         return sqlBrite.wrapDatabaseHelper(helper);
     }
 
-    @Provides
-    @Singleton
-    MovieItemDao provideMovieItemDao(BriteDatabase db) {
-        return new MovieItemDao(db);
-    }
 }

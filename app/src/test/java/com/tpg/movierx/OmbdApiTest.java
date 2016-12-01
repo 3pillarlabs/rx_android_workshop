@@ -44,7 +44,7 @@ public class OmbdApiTest {
     public void getByTitle() {
         TestSubscriber<OmdbMovieDetails> sub = new TestSubscriber<>();
 
-        api.getByTitle("Star Wars: The Force Awakens").compose(RxLog::log).subscribe(sub);
+        api.getByTitle("Star Wars: Episode VII - The Force Awakens").compose(RxLog::log).subscribe(sub);
 
         sub.awaitTerminalEvent();
         sub.assertNoErrors();
@@ -53,7 +53,7 @@ public class OmbdApiTest {
         sub.assertValueCount(1);
 
         OmdbMovieDetails movie = sub.getOnNextEvents().get(0);
-        assertEquals("Star Wars: The Force Awakens", movie.title);
+        assertEquals("Star Wars: Episode VII - The Force Awakens", movie.title);
         assertEquals("2015", movie.year);
     }
 

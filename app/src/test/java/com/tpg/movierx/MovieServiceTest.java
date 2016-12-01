@@ -39,10 +39,10 @@ public class MovieServiceTest {
 
         CharSequence input = "empire at";
 
-        Observable<CharSequence> obs = Observable.interval(0, TimeUnit.MILLISECONDS)
+        Observable<String> obs = Observable.interval(100, TimeUnit.MILLISECONDS)
                 .map(Long::intValue)
                 .take(input.length())
-                .map(end -> input.subSequence(0, end + 1));
+                .map(end -> input.subSequence(0, end + 1)).map(CharSequence::toString);
 
         TestSubscriber<String> subscriber = new TestSubscriber<>();
 

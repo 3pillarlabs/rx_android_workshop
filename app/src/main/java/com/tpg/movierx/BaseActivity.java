@@ -15,7 +15,8 @@ import butterknife.ButterKnife;
  * <p>
  * Created by ciprian.grigor on 04/11/15.
  */
-public abstract class BaseActivity extends RxAppCompatActivity {
+public abstract class BaseActivity
+        extends RxAppCompatActivity {
 
     @Bind(R.id.toolbar)
     @Nullable
